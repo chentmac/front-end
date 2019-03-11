@@ -29,7 +29,7 @@ export default {
     return {
       username: '',
       password: '',
-      usernameError: '',
+      usernameError: 'user name is error.',
       passwordError: '',
       ipAddress: '',
       rsaPublicKey: ''
