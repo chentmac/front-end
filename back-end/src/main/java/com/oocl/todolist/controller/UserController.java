@@ -25,8 +25,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public boolean save(@RequestBody User user) {
-        boolean result = userService.save(user);
+    public boolean save(@RequestBody UserVo userVo) {
+        boolean result = userService.save(userVo);
         return result;
     }
 
