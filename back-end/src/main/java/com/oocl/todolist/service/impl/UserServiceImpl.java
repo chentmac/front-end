@@ -18,6 +18,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private UserTranslator userTranslator;
+
     @Override
     public List<UserVo> getAllUserInfo() {
         List<User> users =  userRepo.findAll();
@@ -31,8 +34,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean save(User user) {
+    public boolean save(UserVo userVo) {
         try {
+            User user = userTranslator.translateToEntity(userVo);
             userRepo.save(user);
         } catch (Exception e) {
             return false;

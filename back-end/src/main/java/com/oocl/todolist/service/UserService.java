@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
     List<UserVo> getAllUserInfo();
-    boolean save(User user);
+    boolean save(UserVo userVo);
     boolean login(LoginVo loginVo);
     User findById(long id);
 }
