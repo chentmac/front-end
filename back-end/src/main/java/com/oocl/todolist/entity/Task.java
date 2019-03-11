@@ -33,10 +33,8 @@ public class Task implements Serializable {
     @JoinTable(name = "USER_TASK_REL", joinColumns = {@JoinColumn(name = "TASK_ID", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "userName")})
     private List<User> executors;
 
-    @CreatedDate
-    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss")
     @Column(name = "CREATE_DATE")
-    private Date createDate;
+    private Date createDate = new Date();
 
     @Column(name = "EXPIRE_DAY")
     private int expireDay;
@@ -48,7 +46,7 @@ public class Task implements Serializable {
     private String content;
 
     @Column(name = "STATUS", length = 4)
-    private long status = 0;
+    private int status = 0;
 
     public long getId() {
         return id;
@@ -98,11 +96,11 @@ public class Task implements Serializable {
         this.content = content;
     }
 
-    public long getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(long status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
