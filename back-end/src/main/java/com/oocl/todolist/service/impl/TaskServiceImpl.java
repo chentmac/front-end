@@ -42,7 +42,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskVo> findAll() {
         List<Task> tasks = taskRepo.findAll();
-        TaskTranslator translator = new TaskTranslator();
         List<TaskVo> vos = translator.translateToVo(tasks);
         return vos;
     }
