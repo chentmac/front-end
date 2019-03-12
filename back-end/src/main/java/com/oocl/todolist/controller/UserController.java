@@ -24,7 +24,7 @@ public class UserController {
         return userService.getAllUserInfo();
     }
 
-    @PostMapping(value = "")
+    @PostMapping
     public boolean save(@RequestBody UserVo userVo) {
         return userService.save(userVo);
 

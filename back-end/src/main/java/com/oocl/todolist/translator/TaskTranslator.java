@@ -20,7 +20,7 @@ public class TaskTranslator {
         Task task = new Task();
         task.setTitle(vo.getTitle());
         task.setContent(vo.getContent());
-        task.setExpireDay(vo.getExpireDay());;
+        task.setExpireDate(vo.getExpireDate());;
         User initiator = userRepo.findUserById(vo.getInitiatorId());
         task.setInitiator(initiator);
         List<Long> executorsId = vo.getExecutorsId();
@@ -35,13 +35,14 @@ public class TaskTranslator {
             TaskVo vo = new TaskVo();
             vo.setContent(task.getContent());
             vo.setTitle(task.getTitle());
-            vo.setExpireDay(task.getExpireDay());
+            vo.setExpireDate(task.getExpireDate());
             vo.setInitiatorName(task.getInitiator().getUserName());
             List<String> usernames = new ArrayList<>();
             for (User user : task.getExecutors()) {
                 usernames.add(user.getUserName());
             }
             vo.setExecutorsName(usernames);
+            vos.add(vo);
         }
         return vos;
     }
