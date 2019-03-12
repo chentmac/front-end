@@ -14,6 +14,19 @@
         <el-table class="item-table" empty-text="No Data" :data="toDoList.slice((currentPage-1)*pageSize,currentPage*pageSize)" ref="multipleTable" stripe
                   max-height="700" style="width: 100%" highlight-current-row @selection-change="handleSelectionChange" @row-dblclick="handleRowDBClick"
                   :default-sort = "{prop: 'endDate', order: 'descending'}">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="Executors:">
+                  <span>{{ props.row.executorsName.join(',') }}</span>
+                </el-form-item>
+                <el-form-item label="Content:">
+                  <span>{{ props.row.content}}</span>
+                </el-form-item>
+
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column label="Title" sortable prop="title">
             <template slot-scope="scope">
@@ -22,12 +35,12 @@
           </el-table-column>
           <el-table-column label="Creator" sortable prop="creator">
             <template slot-scope="scope">
-              <span>{{scope.row.creator}}</span>
+              <span>{{scope.row.initiatorName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="EndDate" sortable prop="endDate" :show-overflow-tooltip="true">
+          <el-table-column label="Expire Date" sortable prop="endDate" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <span v-if="scope.row.endDate !== null">{{scope.row.endDate.substring(0, 10)}}</span>
+              <span v-if="scope.row.expireDate !== null">{{scope.row.expireDate.substring(0, 10)}}</span>
             </template>
           </el-table-column>
           <el-table-column label="Action" :show-overflow-tooltip="true">
@@ -141,8 +154,9 @@
       },
       async findAllitem () {
         let itemInfo;
-        await axios.get(Constant.BASE_URL+'/findAllToDoItem').then(response=>{
-          itemInfo = response.data.data;
+        await axios.get(Constant.BASE_URL+'/task').then(response=>{
+          console.log(response);
+          itemInfo = response.data;
         });
         this.toDoList = itemInfo;
       },
@@ -358,4 +372,23 @@
     margin-top: 0;
     width: 200px;
   }
+  >>>.demo-table-expand {
+    font-size: 0;
+  }
+  >>>.demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  >>>.demo-table-expand .el-form-item {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    line-height: 40px;
+    position: relative;
+    font-size: 14px;
+    /*margin-right: 0;*/
+    /*margin-bottom: 0;*/
+    width: 100%;
+  }
+
 </style>
