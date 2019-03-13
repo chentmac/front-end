@@ -20,47 +20,25 @@
                   @row-dblclick="handleRowDBClick"
                   :default-sort="{prop: 'endDate', order: 'descending'}">
           <el-table-column type="selection" width="55"></el-table-column>
-          <!--<el-table-column type="expand">-->
-            <!--<template slot-scope="props">-->
-              <!--<el-form label-position="left" inline class="demo-table-expand">-->
-                <!--<el-form-item label="商品名称">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="所属店铺">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="商品 ID">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="店铺 ID">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="商品分类">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="店铺地址">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="商品描述">-->
-                  <!--<template slot-scope="scope">-->
-                    <!--<span>{{scope.row.title}}</span>-->
-                  <!--</template>-->
-                <!--</el-form-item>-->
-              <!--</el-form>-->
-            <!--</template>-->
-          <!--</el-table-column>-->
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="Executors:">
+                  <span>{{ scope.row.executorsName.join(',') }}</span>
+                </el-form-item>
+                <el-form-item label="Content:">
+                  <span>{{ scope.row.content}}</span>
+                </el-form-item>
+                <el-form-item label="Detail:">
+                  <li v-for="(isFinish,key) in scope.row.executorCompleteMap">
+                    <span>{{key}}:</span>
+                    <span v-if="isFinish">Complete</span>
+                    <span v-if="!isFinish">In Progress</span>
+                  </li>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-input type="hidden" v-model="item.initiatorId"></el-input>
           <el-table-column label="Title" sortable prop="title">
             <template slot-scope="scope">
@@ -487,8 +465,14 @@
   }
 
   .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    line-height: 40px;
+    position: relative;
+    font-size: 14px;
+    /*margin-right: 0;*/
+    /*margin-bottom: 0;*/
+    width: 100%;
   }
 </style>
