@@ -67,14 +67,14 @@ public class UserServiceImplTest {
     LoginVo loginVo = new LoginVo();
     loginVo.setPassword("123123");
     loginVo.setUserName("123123");
-    boolean login = userService.login(loginVo);
+    User login = userService.login(loginVo);
     assertThat(login,is(true));
   }
 
   @Test
   public void should_return_false_when_login_succuss() {
     when(userRepo.findUserByUserNameAndPassword(anyString(),anyString())).thenReturn(null);
-    boolean login = userService.login(new LoginVo());
+    User login = userService.login(new LoginVo());
     assertThat(login,is(false));
   }
 

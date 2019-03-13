@@ -9,57 +9,59 @@
         <el-button @click="handleDelete">Delete</el-button>
         <el-input v-model="searchItem" placeholder="input title" @keyup.enter.native="onSearch"></el-input>
         <el-button @click="onSearch" icon="el-icon-search">Search</el-button>
-        <el-badge :value="12" class="item">
-          <el-button icon="el-icon-warning">Today</el-button>
+        <el-badge :value="toDayTaskCount" class="item">
+          <el-button icon="el-icon-warning" @click="showTodayTasks">Today</el-button>
         </el-badge>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-table class="item-table" empty-text="No Data"
                   :data="toDoList.slice((currentPage-1)*pageSize,currentPage*pageSize)" ref="multipleTable" stripe
-                  max-height="700" style="width: 100%" highlight-current-row @selection-change="handleSelectionChange"
+                  style="width: 100%" highlight-current-row @selection-change="handleSelectionChange"
                   @row-dblclick="handleRowDBClick"
                   :default-sort="{prop: 'endDate', order: 'descending'}">
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="Executors:">
-                  <span>{{ props.row.executorsName.join(',') }}</span>
-                </el-form-item>
-                <el-form-item label="Content:">
-                  <span>{{ props.row.content}}</span>
-                </el-form-item>
-
-              </el-form>
-            </template>
-          </el-table-column>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="商品名称">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="所属店铺">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="商品 ID">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="店铺 ID">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="商品分类">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="店铺地址">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="商品描述">
-                  <span>111</span>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
+          <!--<el-table-column type="expand">-->
+            <!--<template slot-scope="props">-->
+              <!--<el-form label-position="left" inline class="demo-table-expand">-->
+                <!--<el-form-item label="商品名称">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="所属店铺">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="商品 ID">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="店铺 ID">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="商品分类">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="店铺地址">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="商品描述">-->
+                  <!--<template slot-scope="scope">-->
+                    <!--<span>{{scope.row.title}}</span>-->
+                  <!--</template>-->
+                <!--</el-form-item>-->
+              <!--</el-form>-->
+            <!--</template>-->
+          <!--</el-table-column>-->
+          <el-input type="hidden" v-model="item.initiatorId"></el-input>
           <el-table-column label="Title" sortable prop="title">
             <template slot-scope="scope">
               <span>{{scope.row.title}}</span>
@@ -70,7 +72,7 @@
               <span>{{scope.row.initiatorName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="Expire Date" sortable prop="endDate" :show-overflow-tooltip="true">
+          <el-table-column label="ExpireDay" sortable prop="expireDay" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span v-if="checkToday(scope.row.expireDate)">Today</span>
               <span v-else-if="scope.row.expireDate !== null">{{scope.row.expireDate.substring(0, 10)}}</span>
@@ -89,11 +91,11 @@
         <el-dialog :title="updateDialogTitle" :visible.sync="dialogVisible" width="500px" top="100px"
                    @close='closeDialog'>
           <el-form label-position="top" :model="item" :rules="rules" ref="updateForm" class="dialog-form">
-            <el-input type="hidden" v-model="item.id"></el-input>
+            <el-input type="hidden" v-model="item.taskId"></el-input>
             <el-form-item label="Title" prop="title">
               <el-input v-model="item.title"></el-input>
             </el-form-item>
-            <span v-if="!this.isAdd">
+            <span v-if="!isAdd">
             <el-form-item label="Initiator">
               <el-input v-model="item.initiatorName" :readonly=true></el-input>
             </el-form-item>
@@ -151,6 +153,8 @@
           initiatorId: '',
           executorsId: [],
         },
+        toDayList:[],
+        toDayTaskCount: 0,
         user: {},
         users: [],
         searchItem: '',
@@ -170,6 +174,9 @@
       }
     },
     methods: {
+      showTodayTasks(){
+        this.toDoList = this.toDayList;
+      },
       async findALLuser() {
         let userInfo;
         await axios.get(Constant.BASE_URL + '/user/').then(response => {
@@ -214,10 +221,17 @@
         this.isAdd = true;
       },
       async findAllitem() {
+        this.toDayList = [];
+        this.toDayTaskCount = 0;
         let itemInfo;
         await axios.get(Constant.BASE_URL + '/task/findAll').then(response => {
           itemInfo = response.data;
-          itemInfo = response.data;
+          itemInfo.forEach(value => {
+            if(Utils.checkToday(value.expireDate)){
+              this.toDayTaskCount++;
+              this.toDayList.push(value);
+            }
+          })
         });
         this.toDoList = itemInfo;
       },
@@ -242,7 +256,7 @@
       },
       async remove(item) {
         await axios({
-          url: Constant.BASE_URL + '/deleteItems',
+          url: Constant.BASE_URL + '/task',
           method: 'delete',
           data: item
         }).then(response => {
@@ -257,15 +271,19 @@
             return false;
           } else {
             let array = [];
-            this.item.executorsName.forEach(value => {
-              this.users.forEach(value1 => {
-                if (value == value1.userName) {
-                  array.push(value1.id)
-                }
-              })
-            });
+            if(this.item.executorsName!=null || this.item.executorsName !=''){
+              this.item.executorsName.forEach(value => {
+                this.users.forEach(value1 => {
+                  if (value == value1.userName) {
+                    array.push(value1.id)
+                  }
+                })
+              });
+            }
             this.item.executorsId = array;
-            this.item.initiatorId = this.user.id;
+            if(this.isAdd){
+              this.item.initiatorName = this.user.userName;
+            }
             this.addNewItem(this.item);
           }
         });
@@ -328,6 +346,7 @@
       this.user = JSON.parse(sessionStorage.getItem('users'));
       this.findAllitem();
       this.findALLuser();
+
     }
   };
 </script>
@@ -368,7 +387,7 @@
   }
 
   .table-nav {
-    position: fixed;
+    margin-top: 10px;
     bottom: 40px;
   }
 
@@ -472,23 +491,4 @@
     margin-bottom: 0;
     width: 50%;
   }
-  >>>.demo-table-expand {
-    font-size: 0;
-  }
-  >>>.demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-  >>>.demo-table-expand .el-form-item {
-    display: inline-block;
-    vertical-align: top;
-    box-sizing: border-box;
-    line-height: 40px;
-    position: relative;
-    font-size: 14px;
-    /*margin-right: 0;*/
-    /*margin-bottom: 0;*/
-    width: 100%;
-  }
-
 </style>

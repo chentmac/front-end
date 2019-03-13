@@ -21,12 +21,18 @@ public class TaskController {
 
     @PutMapping(value = "update")
     public boolean update(@RequestBody TaskVo taskVo) {
-      boolean result = taskService.save(taskVo);
+      boolean result = taskService.update(taskVo);
       return result;
     }
 
-    @RequestMapping(value = "")
+    @GetMapping("/findAll")
     public List<TaskVo> findAll() {
         return taskService.findAll();
     }
+
+    @DeleteMapping
+    public boolean delete(@RequestBody List<TaskVo> taskVos){
+        return taskService.delete(taskVos);
+    }
+
 }

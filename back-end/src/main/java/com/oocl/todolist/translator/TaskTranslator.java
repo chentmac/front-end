@@ -29,7 +29,7 @@ public class TaskTranslator {
         task.setId(vo.getTaskId());
         task.setContent(vo.getContent());
         task.setExpireDate(vo.getExpireDate());
-        User initiator = userRepo.findUserById(vo.getInitiatorId());
+        User initiator = userRepo.findUserByUserName(vo.getInitiatorName());
         task.setInitiator(initiator);
         List<Long> executorsId = vo.getExecutorsId();
         List<User> executors = userRepo.findAllById(executorsId);

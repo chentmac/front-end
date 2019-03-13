@@ -1,16 +1,7 @@
 package com.oocl.todolist.entity;
 
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +18,7 @@ public class Task implements Serializable {
   @JoinColumn(name = "INITIATOR", referencedColumnName = "userName", nullable = false)
   private User initiator;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
   @JoinTable(name = "USER_TASK_REL", joinColumns = {@JoinColumn(name = "TASK_ID", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "userName")})
   private List<User> executors;
 
