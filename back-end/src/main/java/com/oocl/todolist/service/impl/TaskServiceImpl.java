@@ -79,7 +79,7 @@ public class TaskServiceImpl implements TaskService {
     List<TaskAssign> assigns = new ArrayList<>();
     for (User u : users) {
       TaskAssign a = new TaskAssign();
-      a.setTaskId(taskId);
+      a.setTask(t);
       a.setUsername(u.getUserName());
       a.setCompleted(false);
       assigns.add(a);

@@ -1,6 +1,8 @@
 package com.oocl.todolist.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +24,10 @@ public class Task implements Serializable {
   @JoinTable(name = "USER_TASK_REL", joinColumns = {@JoinColumn(name = "TASK_ID", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "userName")})
   private List<User> executors;
 
+  @JsonIgnore
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "task", cascade = CascadeType.ALL)
+  private List<TaskAssign> taskAssigns;
+
   @Column(name = "CREATE_DATE")
   private Date createDate = new Date();
 
@@ -36,6 +42,14 @@ public class Task implements Serializable {
 
   @Column(name = "STATUS", length = 4)
   private int status = 0;
+
+  public List<TaskAssign> getTaskAssigns() {
+    return taskAssigns;
+  }
+
+  public void setTaskAssigns(List<TaskAssign> taskAssigns) {
+    this.taskAssigns = taskAssigns;
+  }
 
   public long getId() {
     return id;
