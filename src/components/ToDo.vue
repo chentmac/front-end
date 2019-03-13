@@ -224,7 +224,7 @@
         this.toDayList = [];
         this.toDayTaskCount = 0;
         let itemInfo;
-        await axios.get(Constant.BASE_URL + '/task/findAll').then(response => {
+        await axios.get(Constant.BASE_URL + '/task').then(response => {
           itemInfo = response.data;
           itemInfo.forEach(value => {
             if(Utils.checkToday(value.expireDate)){
@@ -238,12 +238,12 @@
       async addNewItem(item) {
         let itemInfo;
         if (this.isAdd) {
-          await axios.post(Constant.BASE_URL + "/task/save", item).then(response => {
+          await axios.post(Constant.BASE_URL + "/task", item).then(response => {
             itemInfo = response.data.data;
             this.toDoList.push(itemInfo);
           });
         } else {
-          await axios.put(Constant.BASE_URL + "/task/update", item).then(response => {
+          await axios.put(Constant.BASE_URL + "/task", item).then(response => {
             itemInfo = response.data.data;
           }, error => {
 

@@ -13,16 +13,14 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping(value = "")
     public boolean save(@RequestBody TaskVo taskVo) {
-        boolean result = taskService.save(taskVo);
-        return result;
+      return taskService.save(taskVo);
     }
 
-    @PutMapping(value = "update")
+    @PutMapping(value = "")
     public boolean update(@RequestBody TaskVo taskVo) {
       boolean result = taskService.update(taskVo);
-      return result;
     }
 
     @GetMapping("/findAll")
