@@ -1,25 +1,22 @@
 package com.oocl.todolist.service.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
 import com.oocl.todolist.dao.TaskAssignRepo;
 import com.oocl.todolist.dao.TaskRepo;
 import com.oocl.todolist.entity.Task;
 import com.oocl.todolist.entity.User;
 import com.oocl.todolist.translator.TaskTranslator;
 import com.oocl.todolist.vo.TaskVo;
-import java.util.Collections;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class TaskServiceImplTest {
 
@@ -73,5 +70,25 @@ public class TaskServiceImplTest {
     boolean result = taskService.save(null);
 
     assertFalse(result);
+  }
+
+  @Test
+  public void should_return_true_when_update_success() {
+    Task t = new Task();
+    t.setExecutors(Collections.singletonList(new User()));
+    when(taskTranslator.translateToEntity(any())).thenReturn(t);
+    when(taskRepo.save(any())).thenReturn(t);
+
+    assertTrue(taskService.update(new TaskVo()));
+  }
+
+  @Test
+  public void should_return_false_when_update_fail_given_null_task_vo() {
+    assertFalse(taskService.update(null));
+  }
+
+  @Test
+  public void should_return_true_when_delete_success() {
+    assertTrue(taskService.delete(Collections.singletonList(new TaskVo())));
   }
 }
