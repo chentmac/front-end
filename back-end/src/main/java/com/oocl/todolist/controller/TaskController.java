@@ -6,10 +6,7 @@ import com.oocl.todolist.service.TaskService;
 import com.oocl.todolist.service.UserService;
 import com.oocl.todolist.vo.TaskVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +21,12 @@ public class TaskController {
     public boolean save(@RequestBody TaskVo taskVo) {
         boolean result = taskService.save(taskVo);
         return result;
+    }
+
+    @PutMapping(value = "update")
+    public boolean update(@RequestBody TaskVo taskVo) {
+      boolean result = taskService.save(taskVo);
+      return result;
     }
 
     @RequestMapping(value = "/findAll")

@@ -1,5 +1,6 @@
 package com.oocl.todolist.controller;
 
+import com.oocl.todolist.entity.User;
 import com.oocl.todolist.service.UserService;
 import com.oocl.todolist.vo.LoginVo;
 import com.oocl.todolist.vo.UserVo;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public boolean login(@RequestBody LoginVo loginVo) {
+    public User login(@RequestBody LoginVo loginVo) {
         return userService.login(loginVo);
     }
 

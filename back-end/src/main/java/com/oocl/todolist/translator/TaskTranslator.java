@@ -19,6 +19,7 @@ public class TaskTranslator {
     public Task translateToEntity(TaskVo vo) {
         Task task = new Task();
         task.setTitle(vo.getTitle());
+        task.setId(vo.getTaskId());
         task.setContent(vo.getContent());
         task.setExpireDate(vo.getExpireDate());;
         User initiator = userRepo.findUserById(vo.getInitiatorId());
@@ -33,6 +34,7 @@ public class TaskTranslator {
         List<TaskVo> vos = new ArrayList<>();
         for (Task task : tasks) {
             TaskVo vo = new TaskVo();
+            vo.setTaskId(task.getId());
             vo.setContent(task.getContent());
             vo.setTitle(task.getTitle());
             vo.setExpireDate(task.getExpireDate());

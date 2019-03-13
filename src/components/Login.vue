@@ -40,12 +40,11 @@
       };
     },
     methods: {
-      async login () {
+      login () {
         this.loginLoading = true
         axios.post(Constant.BASE_URL+'/user/login',this.user).then(response=>{
-          console.log(response.data)
-          if (response.data){
-            window.localStorage.username = this.user.userName
+          if (response.data != null){
+            sessionStorage.setItem('users',JSON.stringify(response.data));
             this.$router.push('/toDoForm');
           }
           else{
@@ -65,9 +64,9 @@
       async register () {
         this.registerLoading = true
         axios.post(Constant.BASE_URL+'/user',this.user).then(response=>{
-          if (response.data) {
+          if (response.data != null) {
+            console.log(response.data)
             this.username = response.data;
-            window.localStorage.username = this.user.userName
             this.$router.push('/toDoForm');
           }
           else{

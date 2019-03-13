@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TaskVo {
 
+  private long taskId;
   private String title;
   private String content;
   private Date expireDate;
@@ -12,6 +13,14 @@ public class TaskVo {
   private List<Long> executorsId;
   private String initiatorName;
   private List<String> executorsName;
+
+  public long getTaskId() {
+    return taskId;
+  }
+
+  public void setTaskId(long taskId) {
+    this.taskId = taskId;
+  }
 
   public String getTitle() {
     return title;

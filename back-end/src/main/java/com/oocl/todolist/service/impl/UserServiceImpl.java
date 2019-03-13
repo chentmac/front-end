@@ -45,9 +45,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean login(LoginVo loginVo) {
+    public User login(LoginVo loginVo) {
         User result = userRepo.findUserByUserNameAndPassword(loginVo.getUserName(), loginVo.getPassword());
-        return result != null;
+        return result;
     }
 
     @Override

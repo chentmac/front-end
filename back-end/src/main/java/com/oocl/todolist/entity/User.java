@@ -1,5 +1,7 @@
 package com.oocl.todolist.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -22,6 +24,7 @@ public class User implements Serializable {
     @Column(name = "DEPARTMENT")
     private String department;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "initiator", cascade = CascadeType.ALL)
     private List<Task> initialedTasks;
 

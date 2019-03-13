@@ -9,6 +9,6 @@ import java.util.List;
 public interface UserService {
     List<UserVo> getAllUserInfo();
     boolean save(UserVo userVo);
-    boolean login(LoginVo loginVo);
+    User login(LoginVo loginVo);
     User findById(long id);
 }
