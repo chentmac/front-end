@@ -33,33 +33,6 @@
             </template>
           </el-table-column>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="商品名称">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="所属店铺">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="商品 ID">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="店铺 ID">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="商品分类">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="店铺地址">
-                  <span>111</span>
-                </el-form-item>
-                <el-form-item label="商品描述">
-                  <span>111</span>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
           <el-table-column label="Title" sortable prop="title">
             <template slot-scope="scope">
               <span>{{scope.row.title}}</span>
@@ -215,7 +188,7 @@
       },
       async findAllitem() {
         let itemInfo;
-        await axios.get(Constant.BASE_URL + '/task/findAll').then(response => {
+        await axios.get(Constant.BASE_URL + '/task').then(response => {
           itemInfo = response.data;
           itemInfo = response.data;
         });
@@ -224,12 +197,12 @@
       async addNewItem(item) {
         let itemInfo;
         if (this.isAdd) {
-          await axios.post(Constant.BASE_URL + "/task/save", item).then(response => {
+          await axios.post(Constant.BASE_URL + "/task", item).then(response => {
             itemInfo = response.data.data;
             this.toDoList.push(itemInfo);
           });
         } else {
-          await axios.put(Constant.BASE_URL + "/task/update", item).then(response => {
+          await axios.put(Constant.BASE_URL + "/task", item).then(response => {
             itemInfo = response.data.data;
           }, error => {
 
