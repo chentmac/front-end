@@ -20,7 +20,7 @@ public class TaskController {
 
     @PutMapping(value = "")
     public boolean update(@RequestBody TaskVo taskVo) {
-      boolean result = taskService.update(taskVo);
+      return taskService.update(taskVo);
     }
 
     @GetMapping("/findAll")
