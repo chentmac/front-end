@@ -2,6 +2,7 @@ package com.oocl.todolist.vo;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class TaskVo {
 
@@ -13,6 +14,7 @@ public class TaskVo {
   private List<Long> executorsId;
   private String initiatorName;
   private List<String> executorsName;
+  private Map<String, Boolean> executorCompleteMap;
 
   public long getTaskId() {
     return taskId;
@@ -76,5 +78,13 @@ public class TaskVo {
 
   public void setExecutorsName(List<String> executorsName) {
     this.executorsName = executorsName;
+  }
+
+  public Map<String, Boolean> getExecutorCompleteMap() {
+    return executorCompleteMap;
+  }
+
+  public void setExecutorCompleteMap(Map<String, Boolean> executorCompleteMap) {
+    this.executorCompleteMap = executorCompleteMap;
   }
 }

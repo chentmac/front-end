@@ -19,6 +19,19 @@
                   max-height="700" style="width: 100%" highlight-current-row @selection-change="handleSelectionChange"
                   @row-dblclick="handleRowDBClick"
                   :default-sort="{prop: 'endDate', order: 'descending'}">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="Executors:">
+                  <span>{{ props.row.executorsName.join(',') }}</span>
+                </el-form-item>
+                <el-form-item label="Content:">
+                  <span>{{ props.row.content}}</span>
+                </el-form-item>
+
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column type="expand">
             <template slot-scope="props">
@@ -57,7 +70,7 @@
               <span>{{scope.row.initiatorName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="ExpireDay" sortable prop="expireDay" :show-overflow-tooltip="true">
+          <el-table-column label="Expire Date" sortable prop="endDate" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span v-if="checkToday(scope.row.expireDate)">Today</span>
               <span v-else-if="scope.row.expireDate !== null">{{scope.row.expireDate.substring(0, 10)}}</span>
@@ -203,6 +216,7 @@
       async findAllitem() {
         let itemInfo;
         await axios.get(Constant.BASE_URL + '/task/findAll').then(response => {
+          itemInfo = response.data;
           itemInfo = response.data;
         });
         this.toDoList = itemInfo;
@@ -458,4 +472,23 @@
     margin-bottom: 0;
     width: 50%;
   }
+  >>>.demo-table-expand {
+    font-size: 0;
+  }
+  >>>.demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  >>>.demo-table-expand .el-form-item {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    line-height: 40px;
+    position: relative;
+    font-size: 14px;
+    /*margin-right: 0;*/
+    /*margin-bottom: 0;*/
+    width: 100%;
+  }
+
 </style>
