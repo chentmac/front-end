@@ -1,9 +1,12 @@
 package com.oocl.todolist.entity;
 
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -15,8 +18,9 @@ public class TaskAssign implements Serializable {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "TASK_ID")
-    private long taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TASK", referencedColumnName = "id", nullable = false)
+    private Task task;
 
     @Column(name = "USERNAME")
     private String username;
@@ -32,15 +36,15 @@ public class TaskAssign implements Serializable {
         this.id = id;
     }
 
-    public long getTaskId() {
-        return taskId;
+    public Task getTask() {
+      return task;
     }
 
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
+    public void setTask(Task task) {
+      this.task = task;
     }
 
-    public String getUsername() {
+  public String getUsername() {
         return username;
     }
 
