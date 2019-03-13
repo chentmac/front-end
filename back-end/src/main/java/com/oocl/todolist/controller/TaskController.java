@@ -23,7 +23,7 @@ public class TaskController {
       return taskService.update(taskVo);
     }
 
-    @GetMapping("/findAll")
+    @GetMapping("")
     public List<TaskVo> findAll() {
         return taskService.findAll();
     }
