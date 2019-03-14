@@ -56,12 +56,12 @@ public class TaskServiceImplTest {
   public void should_be_save_when_insert_assigns() {
     Task task = new Task();
     task.setExecutors(Collections.singletonList(new User()));
-    when(taskTranslator.translateToEntity(any())).thenReturn(new Task());
+    when(taskTranslator.translateToEntity(any())).thenReturn(task);
     when(taskRepo.save(any())).thenReturn(task);
 
     taskService.save(new TaskVo());
 
-    verify(taskAssignRepo, times(1)).saveAll(anyList());
+    verify(taskRepo,times(1)).save(any());
   }
 
 
