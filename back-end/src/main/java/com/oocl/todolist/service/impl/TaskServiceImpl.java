@@ -62,11 +62,25 @@ public class TaskServiceImpl implements TaskService {
   @Transactional
   @Override
   public boolean delete(List<TaskVo> taskVos) {
-    for (TaskVo t:taskVos) {
-          taskRepo.deleteTask(t.getTaskId());
-          deleteAssign(t.getTaskId());
+    for (TaskVo t : taskVos) {
+      taskRepo.deleteTask(t.getTaskId());
+      deleteAssign(t.getTaskId());
     }
     return true;
+  }
+
+  @Override
+  public List<TaskVo> findByExecutor(String executor) {
+    List<Task> tasks = taskRepo.findByExecutor(executor);
+    List<TaskVo> vos = translator.translateToVo(tasks);
+    return vos;
+  }
+
+  @Override
+  public List<TaskVo> findAllToDo(String username) {
+    List<Task> tasks = taskRepo.findAllToDo(username);
+    List<TaskVo> vos = translator.translateToVo(tasks);
+    return vos;
   }
 
   private void deleteAssign(long taskId) {

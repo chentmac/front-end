@@ -13,4 +13,8 @@ public interface TaskService {
   boolean update(TaskVo taskVo);
 
   boolean delete(List<TaskVo> taskVos);
+
+  List<TaskVo> findByExecutor(String executor);
+
+  List<TaskVo> findAllToDo(String username);
 }

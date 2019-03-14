@@ -79,7 +79,7 @@
             </template>
           </el-table-column>
           <el-table-column label="Action" :show-overflow-tooltip="true">
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="scope.row.executorsName.indexOf(user.userName)>-1">
               <span><el-button type="danger" @click="finishClick(scope.row)">Finish</el-button></span>
             </template>
           </el-table-column>
@@ -101,7 +101,7 @@
             </el-form-item>
               </span>
             <el-form-item label="Executors">
-              <el-select v-model="item.executorsName" filterable multiple placeholder="请选择">
+              <el-select v-model="item.executorsName" multiple placeholder="Select">
                 <el-option
                   v-for="item in users"
                   :key="item.userName"
@@ -220,11 +220,11 @@
         this.dialogVisible = true;
         this.isAdd = true;
       },
-      async findAllitem() {
+      async findAllitem(userName) {
         this.toDayList = [];
         this.toDayTaskCount = 0;
         let itemInfo;
-        await axios.get(Constant.BASE_URL + '/task').then(response => {
+        await axios.get(Constant.BASE_URL + '/task/todo/'+userName).then(response => {
           itemInfo = response.data;
           itemInfo.forEach(value => {
             if(Utils.checkToday(value.expireDate)){
@@ -239,20 +239,25 @@
         let itemInfo;
         if (this.isAdd) {
           await axios.post(Constant.BASE_URL + "/task", item).then(response => {
-            itemInfo = response.data.data;
-            this.toDoList.push(itemInfo);
+            if(response.data){
+              this.showWarning(Constant.SAVE_SUCCEED, "success");
+            }
+          },error=>{
+
           });
         } else {
           await axios.put(Constant.BASE_URL + "/task", item).then(response => {
-            itemInfo = response.data.data;
+            if(response.data){
+              this.showWarning(Constant.SAVE_SUCCEED, "success");
+            }
           }, error => {
 
+            this.showWarning(Constant.SAVE_SUCCEED, "error");
           });
         }
-        this.closeDialog();
-        this.showWarning(Constant.SAVE_SUCCEED, "success");
+        this.closeDialog()
         this.currentPage = 1;
-        this.findAllitem();
+        this.findAllitem(this.user.userName);
       },
       async remove(item) {
         await axios({
@@ -263,24 +268,24 @@
           this.showWarning(Constant.DELETE_SUCCEED, "success")
         });
         this.currentPage = 1;
-        this.findAllitem();
+        this.findAllitem(this.user.userName);
       },
       saveItem() {
         this.$refs.updateForm.validate((valid) => {
           if (!valid) {
             return false;
           } else {
-            let array = [];
-            if(this.item.executorsName!=null || this.item.executorsName !=''){
+            let array1 = [];
+            if(this.item.executorsName!=null || this.item.executorsName !== []){
               this.item.executorsName.forEach(value => {
                 this.users.forEach(value1 => {
                   if (value == value1.userName) {
-                    array.push(value1.id)
+                    array1.push(value1.id)
                   }
                 })
               });
             }
-            this.item.executorsId = array;
+            this.item.executorsId = array1;
             if(this.isAdd){
               this.item.initiatorName = this.user.userName;
             }
@@ -300,7 +305,7 @@
       async finish(item) {
         await axios.put(Constant.BASE_URL + "/finishItem", item).then(response => {
           this.showWarning(Constant.FINISH_SUCCEED, "success")
-          this.findAllitem();
+          this.findAllitem(this.user.userName);
         }, error => {
           this.showWarning(Constant.FINISH_SUCCEED, "error")
         })
@@ -310,7 +315,10 @@
       },
       closeDialog() {
         this.dialogVisible = false;
-        this.item = {};
+          this.item.executorsName = [];
+        this.item.title = '';
+        this.item.expireDate = '';
+        this.item.content = '';
         this.$refs.updateForm.resetFields();
       },
       showModifyDialog() {
@@ -335,8 +343,8 @@
         })
       },
       onSearch() {
-        axios.get(Constant.BASE_URL + '/searchByTitle?title=' + this.searchItem.trim() + '&status=0').then(response => {
-          this.toDoList = response.data.data;
+        axios.get(Constant.BASE_URL + '/task/' + this.searchItem.trim()).then(response => {
+          this.toDoList = response.data;
         }, error => {
 
         })
@@ -344,7 +352,7 @@
     },
     mounted() {
       this.user = JSON.parse(sessionStorage.getItem('users'));
-      this.findAllitem();
+      this.findAllitem(this.user.userName);
       this.findALLuser();
 
     }

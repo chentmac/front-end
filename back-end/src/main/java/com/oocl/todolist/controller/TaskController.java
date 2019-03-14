@@ -20,17 +20,28 @@ public class TaskController {
 
     @PutMapping(value = "")
     public boolean update(@RequestBody TaskVo taskVo) {
-      boolean result = taskService.update(taskVo);
+      return taskService.update(taskVo);
+
     }
 
-    @GetMapping("/findAll")
+    @GetMapping
     public List<TaskVo> findAll() {
         return taskService.findAll();
+    }
+
+    @GetMapping("/todo/{username}")
+    public List<TaskVo> findAllToDo(@PathVariable("username") String username){
+        return taskService.findAllToDo(username);
     }
 
     @DeleteMapping
     public boolean delete(@RequestBody List<TaskVo> taskVos){
         return taskService.delete(taskVos);
+    }
+
+    @GetMapping("/{executor}")
+    public List<TaskVo> findByExecutor(@PathVariable("executor")String executor){
+      return taskService.findByExecutor(executor);
     }
 
 }

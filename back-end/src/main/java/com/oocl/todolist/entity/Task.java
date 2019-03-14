@@ -18,7 +18,7 @@ public class Task implements Serializable {
   @JoinColumn(name = "INITIATOR", referencedColumnName = "userName", nullable = false)
   private User initiator;
 
-  @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "USER_TASK_REL", joinColumns = {@JoinColumn(name = "TASK_ID", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "userName")})
   private List<User> executors;
 
