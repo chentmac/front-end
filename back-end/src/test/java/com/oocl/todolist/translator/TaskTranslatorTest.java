@@ -1,7 +1,9 @@
 package com.oocl.todolist.translator;
 
+import com.oocl.todolist.dao.TaskAssignRepo;
 import com.oocl.todolist.dao.UserRepo;
 import com.oocl.todolist.entity.Task;
+import com.oocl.todolist.entity.TaskAssign;
 import com.oocl.todolist.entity.User;
 import com.oocl.todolist.vo.TaskVo;
 import org.junit.Before;
@@ -14,19 +16,20 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-
 
 
 public class TaskTranslatorTest {
   private TaskTranslator taskTranslator = new TaskTranslator();
   private UserRepo userRepo = mock(UserRepo.class);
+  private TaskAssignRepo taskAssignRepo = mock(TaskAssignRepo.class);
+
 
   @Before
-  public void init(){
-    setField(taskTranslator,"userRepo",userRepo);
+  public void init() {
+    setField(taskTranslator, "userRepo", userRepo);
+    setField(taskTranslator, "taskAssignRepo", taskAssignRepo);
   }
 
   @Test
@@ -37,15 +40,25 @@ public class TaskTranslatorTest {
     Task task = taskTranslator.translateToEntity(vo);
 
     assertNotNull(task);
-    assertThat(task.getContent(),is("1"));
-    assertThat(task.getTitle(),is("3"));
+    assertThat(task.getContent(), is("1"));
+    assertThat(task.getTitle(), is("3"));
   }
 
   @Test
   public void should_return_taskVo_list_when_given_task_list() {
     List<Task> tasks = mockTaskList();
+    when(taskAssignRepo.findByUsernameAndTaskId("1", 0L)).thenReturn(mockTaskAssign());
+    
     List<TaskVo> taskVos = taskTranslator.translateToVo(tasks);
-    assertTrue(taskVos.size()>0);
+
+    assertTrue(taskVos.size() > 0);
+  }
+
+  private TaskAssign mockTaskAssign() {
+    TaskAssign taskAssign = new TaskAssign();
+    taskAssign.setUsername("DaMing");
+    taskAssign.setCompleted(true);
+    return taskAssign;
   }
 
   private List<Task> mockTaskList() {

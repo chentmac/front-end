@@ -25,7 +25,7 @@ public class User implements Serializable {
     private String department;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "initiator", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "initiator", cascade = CascadeType.MERGE)
     private List<Task> initialedTasks;
 
     public long getId() {

@@ -24,7 +24,7 @@ public class TaskController {
 
     }
 
-    @GetMapping
+    @GetMapping("")
     public List<TaskVo> findAll() {
         return taskService.findAll();
     }
