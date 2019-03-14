@@ -90,7 +90,7 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public boolean finishTask(String username, long taskId) {
     taskAssignRepo.finishTask(username,taskId);
-    return false;
+    return true;
   }
 
   @Override

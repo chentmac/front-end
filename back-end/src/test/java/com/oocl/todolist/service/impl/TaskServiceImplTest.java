@@ -61,7 +61,7 @@ public class TaskServiceImplTest {
 
     taskService.save(new TaskVo());
 
-    verify(taskRepo,times(1)).save(any());
+    verify(taskRepo, times(1)).save(any());
   }
 
 
@@ -106,5 +106,18 @@ public class TaskServiceImplTest {
     when(taskTranslator.translateToVo(any())).thenReturn(Collections.singletonList(new TaskVo()));
 
     assertNotNull(taskService.findAllToDo("Daming"));
+  }
+
+  @Test
+  public void should_return_true_when_finish_task() {
+    assertTrue(taskService.finishTask("Daming", 1L));
+  }
+
+  @Test
+  public void should_return_not_empty_when_find_all_finished() {
+    when(taskRepo.findAllFinished()).thenReturn(Collections.singletonList(new Task()));
+    when(taskTranslator.translateToVo(anyList())).thenReturn(Collections.singletonList(new TaskVo()));
+
+    assertNotNull(taskService.findAllFinished());
   }
 }
