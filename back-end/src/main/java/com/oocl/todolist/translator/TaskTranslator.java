@@ -42,18 +42,17 @@ public class TaskTranslator {
         for (Task task : tasks) {
             long taskId = task.getId();
             TaskVo vo = new TaskVo();
-            vo.setTaskId(task.getId());
+            vo.setTaskId(taskId);
             vo.setContent(task.getContent());
             vo.setTitle(task.getTitle());
             vo.setExpireDate(task.getExpireDate());
             vo.setInitiatorName(task.getInitiator().getUserName());
             List<String> usernames = new ArrayList<>();
             Map<String, Boolean> executorCompleteMap = new HashMap<>();
-            for (User user : task.getExecutors()) {
-                String username = user.getUserName();
+            for (TaskAssign ta : taskAssignRepo.findByTaskId(taskId)) {
+                String username = ta.getUsername();
                 usernames.add(username);
-                TaskAssign taskAssign = taskAssignRepo.findByUsernameAndTaskId(username, taskId);
-                executorCompleteMap.put(taskAssign.getUsername(), taskAssign.isCompleted());
+                executorCompleteMap.put(ta.getUsername(), ta.isCompleted());
             }
             vo.setExecutorCompleteMap(executorCompleteMap);
             vo.setExecutorsName(usernames);

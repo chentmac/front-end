@@ -15,4 +15,8 @@ public interface TaskAssignRepo extends JpaRepository<TaskAssign, Long> {
 
   @Modifying
   void deleteByTaskId(long taskId);
+
+  @Modifying
+  @Query(value = "update task_assign set is_completed = 1 where username = ?1 and task_id = ?2",nativeQuery = true)
+  void finishTask(String username, long taskId);
 }

@@ -58,7 +58,7 @@
           </el-table-column>
           <el-table-column label="Action" :show-overflow-tooltip="true">
             <template slot-scope="scope" v-if="scope.row.executorsName.indexOf(user.userName)>-1">
-              <span><el-button type="danger" @click="finishClick(scope.row)">Finish</el-button></span>
+              <span><el-button type="danger" @click="finishClick(scope.row.taskId)">Finish</el-button></span>
             </template>
           </el-table-column>
         </el-table>
@@ -203,6 +203,7 @@
         this.toDayTaskCount = 0;
         let itemInfo;
         await axios.get(Constant.BASE_URL + '/task/todo/'+userName).then(response => {
+          console.log(response.data)
           itemInfo = response.data;
           itemInfo.forEach(value => {
             if(Utils.checkToday(value.expireDate)){
@@ -271,17 +272,17 @@
           }
         });
       },
-      finishClick(item) {
+      finishClick(taskId) {
         this.$confirm(Constant.FINISH_ITEM, {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel'
         }).then(action => {
-          this.finish(item);
+          this.finish(taskId);
         }).catch(_ => {
         })
       },
-      async finish(item) {
-        await axios.put(Constant.BASE_URL + "/finishItem", item).then(response => {
+      async finish(taskId) {
+        await axios.put(Constant.BASE_URL + "/task/finished/"+this.user.userName+"/"+taskId).then(response => {
           this.showWarning(Constant.FINISH_SUCCEED, "success")
           this.findAllitem(this.user.userName);
         }, error => {
@@ -292,8 +293,10 @@
         this.remove(this.multipleSelection);
       },
       closeDialog() {
+
         this.dialogVisible = false;
-          this.item.executorsName = [];
+        this.item.executorsName = [];
+        console.log(this.item.executorsName)
         this.item.title = '';
         this.item.expireDate = '';
         this.item.content = '';
@@ -332,7 +335,6 @@
       this.user = JSON.parse(sessionStorage.getItem('users'));
       this.findAllitem(this.user.userName);
       this.findALLuser();
-
     }
   };
 </script>

@@ -17,4 +17,8 @@ public interface TaskService {
   List<TaskVo> findByExecutor(String executor);
 
   List<TaskVo> findAllToDo(String username);
+
+  boolean finishTask(String username,long taskId);
+
+  List<TaskVo> findAllFinished();
 }

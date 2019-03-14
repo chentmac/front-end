@@ -34,6 +34,11 @@ public class TaskController {
         return taskService.findAllToDo(username);
     }
 
+  @GetMapping("/finished")
+  public List<TaskVo> findAllFinished(){
+    return taskService.findAllFinished();
+  }
+
     @DeleteMapping
     public boolean delete(@RequestBody List<TaskVo> taskVos){
         return taskService.delete(taskVos);
@@ -42,6 +47,11 @@ public class TaskController {
     @GetMapping("/{executor}")
     public List<TaskVo> findByExecutor(@PathVariable("executor")String executor){
       return taskService.findByExecutor(executor);
+    }
+
+    @PutMapping("/finished/{username}/{taskId}")
+    public boolean finishTask(@PathVariable("username") String username,@PathVariable("taskId") long taskId){
+      return taskService.finishTask(username,taskId);
     }
 
 }

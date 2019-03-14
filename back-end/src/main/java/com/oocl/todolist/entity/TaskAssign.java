@@ -19,7 +19,7 @@ public class TaskAssign implements Serializable {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TASK", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "TASK_ID", referencedColumnName = "id", nullable = false)
     private Task task;
 
     @Column(name = "USERNAME")

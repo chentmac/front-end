@@ -46,13 +46,14 @@ public class TaskServiceImpl implements TaskService {
     return vos;
   }
 
+  @Transactional
   @Override
   public boolean update(TaskVo taskVo) {
     try {
       Task task = translator.translateToEntity(taskVo);
-      Task t = taskRepo.save(task);
-      deleteAssign(t.getId());
-      insertAssign(t);
+      deleteAssign(task.getId());
+      insertAssign(task);
+      taskRepo.save(task);
     } catch (Exception e) {
       return false;
     }
@@ -63,8 +64,8 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public boolean delete(List<TaskVo> taskVos) {
     for (TaskVo t : taskVos) {
-     Task task = taskRepo.findById(t.getTaskId());
-     taskRepo.delete(task);
+      Task task = taskRepo.findById(t.getTaskId());
+      taskRepo.delete(task);
       taskRepo.deleteTask(t.getTaskId());
       deleteAssign(t.getTaskId());
     }
@@ -84,6 +85,21 @@ public class TaskServiceImpl implements TaskService {
     List<TaskVo> vos = translator.translateToVo(tasks);
     return vos;
   }
+
+  @Transactional
+  @Override
+  public boolean finishTask(String username, long taskId) {
+    taskAssignRepo.finishTask(username,taskId);
+    return false;
+  }
+
+  @Override
+  public List<TaskVo> findAllFinished() {
+    List<Task> tasks = taskRepo.findAllFinished();
+    List<TaskVo> vos = translator.translateToVo(tasks);
+    return vos;
+  }
+
 
   private void deleteAssign(long taskId) {
     taskAssignRepo.deleteByTaskId(taskId);

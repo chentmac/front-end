@@ -1,32 +1,55 @@
 <template>
   <el-row class="text-align-left">
     <Header></Header>
-
     <el-col :span="24">
-      <el-col :span="22" :offset="1" class="page-title">Items Finished</el-col>
+      <el-col :span="22" :offset="1" class="page-title">Finish</el-col>
       <el-col :span="22" :offset="1" class="hight-btn">
         <el-input v-model="searchItem" placeholder="input title" @keyup.enter.native="onSearch"></el-input>
-        <el-button @click="onSearch">Search</el-button>
+        <el-button @click="onSearch" icon="el-icon-search">Search</el-button>
+        <el-badge :value="toDayTaskCount" class="item">
+          <el-button icon="el-icon-warning" @click="showTodayTasks">Today</el-button>
+        </el-badge>
       </el-col>
       <el-col :span="22" :offset="1">
         <el-table class="item-table" empty-text="No Data"
                   :data="toDoList.slice((currentPage-1)*pageSize,currentPage*pageSize)" ref="multipleTable" stripe
-                  max-height="700" style="width: 100%" highlight-current-row @selection-change="handleSelectionChange"
+                  style="width: 100%" highlight-current-row @selection-change="handleSelectionChange"
                   @row-dblclick="handleRowDBClick"
                   :default-sort="{prop: 'endDate', order: 'descending'}">
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="Executors:">
+                  <span>{{ scope.row.executorsName.join(',') }}</span>
+                </el-form-item>
+                <el-form-item label="Content:">
+                  <span>{{ scope.row.content}}</span>
+                </el-form-item>
+                <el-form-item label="Detail:">
+                  <li v-for="(isFinish,key) in scope.row.executorCompleteMap">
+                    <span>{{key}}:</span>
+                    <span v-if="isFinish">Complete</span>
+                    <span v-if="!isFinish">In Progress</span>
+                  </li>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
+          <el-input type="hidden" v-model="item.initiatorId"></el-input>
           <el-table-column label="Title" sortable prop="title">
             <template slot-scope="scope">
               <span>{{scope.row.title}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="Creator" sortable prop="creator">
+          <el-table-column label="Initiator" sortable prop="initiator">
             <template slot-scope="scope">
-              <span>{{scope.row.creator}}</span>
+              <span>{{scope.row.initiatorName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="EndDate" sortable prop="endDate" :show-overflow-tooltip="true">
+          <el-table-column label="ExpireDay" sortable prop="expireDay" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <span v-if="scope.row.endDate !== null">{{scope.row.endDate.substring(0, 10)}}</span>
+              <span v-if="checkToday(scope.row.expireDate)">Today</span>
+              <span v-else-if="scope.row.expireDate !== null">{{scope.row.expireDate.substring(0, 10)}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -37,24 +60,38 @@
         <el-dialog :title="updateDialogTitle" :visible.sync="dialogVisible" width="500px" top="100px"
                    @close='closeDialog'>
           <el-form label-position="top" :model="item" :rules="rules" ref="updateForm" class="dialog-form">
-            <el-input type="hidden" v-model="item.id"></el-input>
+            <el-input type="hidden" v-model="item.taskId"></el-input>
             <el-form-item label="Title" prop="title">
-              <el-input v-model="item.title" :readonly="true"></el-input>
+              <el-input v-model="item.title" :readonly=true></el-input>
             </el-form-item>
-            <el-form-item label="Creator" prop="creator">
-              <el-input v-model="item.creator" :readonly="true"></el-input>
+            <span v-if="!isAdd">
+            <el-form-item label="Initiator">
+              <el-input v-model="item.initiatorName" :readonly=true></el-input>
             </el-form-item>
-            <el-form-item label="EndDate">
-              <el-col :span="11" v-if="item.endDate!=null">
-                <el-input :readonly="true" :value="item.endDate.substring(0,10)"></el-input>
+              </span>
+            <el-form-item label="Executors">
+              <el-select v-model="item.executorsName" multiple placeholder="Select">
+                <el-option
+                  v-for="item in users"
+                  :key="item.userName"
+                  :label="item.userName"
+                  :value="item.userName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="ExpireDate">
+              <el-col :span="11">
+                <el-date-picker type="date" placeholder="Pick a date" v-model="item.expireDate"
+                                style="width: 100%;" :readonly="true"></el-date-picker>
               </el-col>
             </el-form-item>
-            <el-form-item label="Detail">
-              <el-input type="textarea" v-model="item.detail" :readonly="true"></el-input>
+            <el-form-item label="Content">
+              <el-input type="textarea" v-model="item.content"></el-input>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
-          <el-button @click="handleCancleBtn">Cancle</el-button>
+          <el-button @click="handleCancelBtn">Cancle</el-button>
+          <el-button type="danger" @click="saveItem">Save</el-button>
         </span>
         </el-dialog>
       </el-col>
@@ -66,20 +103,29 @@
   import Constant from '@/common/Constant'
   import axios from 'axios'
   import Header from '@/components/Header.vue'
+  import Utils from '@/util/Utils'
 
   export default {
+    name: 'ToDo',
     components: {
       Header
     },
     data() {
       return {
         item: {
-          id: '',
+          taskId: '',
           title: '',
-          creator: '',
-          endDate: '',
-          detail: ''
+          initiatorName: '',
+          executorsName: [],
+          expireDate: '',
+          content: '',
+          initiatorId: '',
+          executorsId: [],
         },
+        toDayList:[],
+        toDayTaskCount: 0,
+        user: {},
+        users: [],
         searchItem: '',
         dialogVisible: false,
         isAdd: false,
@@ -93,13 +139,23 @@
           title: [
             {required: true, message: Constant.INPUT_TITLE, trigger: ['blur', 'change']}
           ],
-          creator: [
-            {required: true, message: Constant.INPUT_TITLE, trigger: ['blur', 'change']}
-          ],
         }
       }
     },
     methods: {
+      showTodayTasks(){
+        this.toDoList = this.toDayList;
+      },
+      async findALLuser() {
+        let userInfo;
+        await axios.get(Constant.BASE_URL + '/user/').then(response => {
+          userInfo = response.data;
+        });
+        this.users = userInfo;
+      },
+      checkToday(date) {
+        return Utils.checkToday(date)
+      },
       handleSizeChange(val) {
         this.pageSize = val;
       },
@@ -111,12 +167,10 @@
           this.$confirm(Constant.SELECT_DELETE, {
             confirmButtonText: 'Confirm',
             cancelButtonText: 'Cancel'
-          })
-            .then(action => {
-              this.deleteitem();
-            })
-            .catch(_ => {
-            });
+          }).then(action => {
+            this.deleteItem();
+          }).catch(_ => {
+          });
         } else {
           this.$message.warning(Constant.NO_SELECTED);
         }
@@ -136,44 +190,107 @@
         this.isAdd = true;
       },
       async findAllitem() {
+        this.toDayList = [];
+        this.toDayTaskCount = 0;
         let itemInfo;
-        await axios.get(Constant.BASE_URL + '/findAllFinishItem').then(response => {
-          itemInfo = response.data.data;
+        await axios.get(Constant.BASE_URL + '/task/finished').then(response => {
+          console.log(response.data)
+          itemInfo = response.data;
+          itemInfo.forEach(value => {
+            if(Utils.checkToday(value.expireDate)){
+              this.toDayTaskCount++;
+              this.toDayList.push(value);
+            }
+          })
         });
         this.toDoList = itemInfo;
       },
       async addNewItem(item) {
         let itemInfo;
         if (this.isAdd) {
-          await axios.post(Constant.BASE_URL + "/addToDoItem", item).then(response => {
-            itemInfo = response.data.data;
-            this.toDoList.push(itemInfo);
+          await axios.post(Constant.BASE_URL + "/task", item).then(response => {
+            if(response.data){
+              this.showWarning(Constant.SAVE_SUCCEED, "success");
+            }
+          },error=>{
+
           });
         } else {
-          await axios.put(Constant.BASE_URL + "/updateToDoItem", item).then(response => {
-            itemInfo = response.data.data;
+          await axios.put(Constant.BASE_URL + "/task", item).then(response => {
+            if(response.data){
+              this.showWarning(Constant.SAVE_SUCCEED, "success");
+            }
+          }, error => {
+
+            this.showWarning(Constant.SAVE_SUCCEED, "error");
           });
         }
-        this.closeDialog();
+        this.closeDialog()
+        this.currentPage = 1;
         this.findAllitem();
       },
       async remove(item) {
-        let itemInfo = await remove(item);
-        if (itemInfo.code === Constant.POPUP_EXCEPTION_CODE && itemInfo.msg !== '') {
-          this.$alert(itemInfo.msg, 'Warning', {
-            confirmButtonText: 'OK'
-          });
-        } else {
-          this.toDoList = itemInfo.data;
-          this.currentPage = 1;
-        }
+        await axios({
+          url: Constant.BASE_URL + '/task',
+          method: 'delete',
+          data: item
+        }).then(response => {
+          this.showWarning(Constant.DELETE_SUCCEED, "success")
+        });
+        this.currentPage = 1;
+        this.findAllitem();
       },
-      deleteitem() {
+      saveItem() {
+        this.$refs.updateForm.validate((valid) => {
+          if (!valid) {
+            return false;
+          } else {
+            let array1 = [];
+            if(this.item.executorsName!=null || this.item.executorsName !== []){
+              this.item.executorsName.forEach(value => {
+                this.users.forEach(value1 => {
+                  if (value == value1.userName) {
+                    array1.push(value1.id)
+                  }
+                })
+              });
+            }
+            this.item.executorsId = array1;
+            if(this.isAdd){
+              this.item.initiatorName = this.user.userName;
+            }
+            this.addNewItem(this.item);
+          }
+        });
+      },
+      finishClick(taskId) {
+        this.$confirm(Constant.FINISH_ITEM, {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel'
+        }).then(action => {
+          this.finish(taskId);
+        }).catch(_ => {
+        })
+      },
+      async finish(taskId) {
+        await axios.put(Constant.BASE_URL + "/task/finished/"+this.user.userName+"/"+taskId).then(response => {
+          this.showWarning(Constant.FINISH_SUCCEED, "success")
+          this.findAllitem();
+        }, error => {
+          this.showWarning(Constant.FINISH_SUCCEED, "error")
+        })
+      },
+      deleteItem() {
         this.remove(this.multipleSelection);
       },
       closeDialog() {
+
         this.dialogVisible = false;
-        this.item = {};
+        this.item.executorsName = [];
+        console.log(this.item.executorsName)
+        this.item.title = '';
+        this.item.expireDate = '';
+        this.item.content = '';
         this.$refs.updateForm.resetFields();
       },
       showModifyDialog() {
@@ -187,21 +304,29 @@
           this.$message.warning(selectWarningInfo);
         }
       },
-      handleCancleBtn() {
+      handleCancelBtn() {
         this.$refs.updateForm.resetFields();
         this.dialogVisible = false;
       },
+      showWarning(msg, type) {
+        this.$message({
+          message: msg,
+          type: type
+        })
+      },
       onSearch() {
-        axios.get(Constant.BASE_URL + '/searchByTitle?title=' + this.searchItem.trim() + '&status=1').then(response => {
-          this.toDoList = response.data.data;
+        axios.get(Constant.BASE_URL + '/task/' + this.searchItem.trim()).then(response => {
+          this.toDoList = response.data;
         }, error => {
 
         })
       }
     },
     mounted() {
+      this.user = JSON.parse(sessionStorage.getItem('users'));
       this.findAllitem();
-    },
+      this.findALLuser();
+    }
   };
 </script>
 
@@ -234,8 +359,14 @@
     margin-top: 15px;
   }
 
+  .item {
+    margin-top: -1px;
+    margin-right: 0px;
+    float: right;
+  }
+
   .table-nav {
-    position: fixed;
+    margin-top: 10px;
     bottom: 40px;
   }
 
@@ -323,5 +454,26 @@
   .el-input {
     margin-top: 0;
     width: 200px;
+  }
+
+  .demo-table-expand {
+    font-size: 0;
+  }
+
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+
+  .demo-table-expand .el-form-item {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    line-height: 40px;
+    position: relative;
+    font-size: 14px;
+    /*margin-right: 0;*/
+    /*margin-bottom: 0;*/
+    width: 100%;
   }
 </style>
