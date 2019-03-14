@@ -91,4 +91,20 @@ public class TaskServiceImplTest {
   public void should_return_true_when_delete_success() {
     assertTrue(taskService.delete(Collections.singletonList(new TaskVo())));
   }
+
+  @Test
+  public void should_return_not_null_when_find_by_executor() {
+    when(taskRepo.findByExecutor(anyString())).thenReturn(Collections.singletonList(new Task()));
+    when(taskTranslator.translateToVo(any())).thenReturn(Collections.singletonList(new TaskVo()));
+
+    assertNotNull(taskService.findByExecutor("Daming"));
+  }
+
+  @Test
+  public void should_return_not_null_when_find_all_to_do() {
+    when(taskRepo.findAllToDo(anyString())).thenReturn(Collections.singletonList(new Task()));
+    when(taskTranslator.translateToVo(any())).thenReturn(Collections.singletonList(new TaskVo()));
+
+    assertNotNull(taskService.findAllToDo("Daming"));
+  }
 }
