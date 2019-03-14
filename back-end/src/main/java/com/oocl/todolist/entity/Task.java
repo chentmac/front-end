@@ -17,10 +17,10 @@ public class Task implements Serializable {
   private long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "INITIATOR", referencedColumnName = "userName", nullable = false)
+  @JoinColumn(name = "INITIATOR", referencedColumnName = "userName")
   private User initiator;
 
-  @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+  @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
   @JoinTable(name = "USER_TASK_REL", joinColumns = {@JoinColumn(name = "TASK_ID", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "userName")})
   private List<User> executors;
 

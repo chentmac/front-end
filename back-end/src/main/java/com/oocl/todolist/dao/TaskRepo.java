@@ -9,4 +9,6 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
   @Modifying
   @Query(value = "delete from Task t where t.id=?1")
   void deleteTask(long taskId);
+
+  Task findById(long id);
 }

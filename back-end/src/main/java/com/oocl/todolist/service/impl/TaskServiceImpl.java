@@ -31,8 +31,8 @@ public class TaskServiceImpl implements TaskService {
   public boolean save(TaskVo taskVo) {
     try {
       Task task = translator.translateToEntity(taskVo);
-      Task t = taskRepo.save(task);
-      insertAssign(t);
+      insertAssign(task);
+      taskRepo.save(task);
     } catch (Exception e) {
       return false;
     }
@@ -63,8 +63,8 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public boolean delete(List<TaskVo> taskVos) {
     for (TaskVo t:taskVos) {
-          taskRepo.deleteTask(t.getTaskId());
-          deleteAssign(t.getTaskId());
+     Task task = taskRepo.findById(t.getTaskId());
+     taskRepo.delete(task);
     }
     return true;
   }
@@ -75,7 +75,6 @@ public class TaskServiceImpl implements TaskService {
 
   private void insertAssign(Task t) {
     List<User> users = t.getExecutors();
-    long taskId = t.getId();
     List<TaskAssign> assigns = new ArrayList<>();
     for (User u : users) {
       TaskAssign a = new TaskAssign();
@@ -84,6 +83,6 @@ public class TaskServiceImpl implements TaskService {
       a.setCompleted(false);
       assigns.add(a);
     }
-    taskAssignRepo.saveAll(assigns);
+    t.setTaskAssigns(assigns);
   }
 }
