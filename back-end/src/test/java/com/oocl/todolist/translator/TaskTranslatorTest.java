@@ -48,7 +48,12 @@ public class TaskTranslatorTest {
   public void should_return_taskVo_list_when_given_task_list() {
     List<Task> tasks = mockTaskList();
     when(taskAssignRepo.findByUsernameAndTaskId("1", 0L)).thenReturn(mockTaskAssign());
-    
+    ArrayList<TaskAssign> taskAssigns = new ArrayList<>();
+    TaskAssign taskAssign = new TaskAssign();
+    taskAssign.setUsername("Daming");
+    taskAssign.setCompleted(true);
+    taskAssigns.add(taskAssign);
+    when(taskAssignRepo.findByTaskId(anyLong())).thenReturn(taskAssigns);
     List<TaskVo> taskVos = taskTranslator.translateToVo(tasks);
 
     assertTrue(taskVos.size() > 0);
