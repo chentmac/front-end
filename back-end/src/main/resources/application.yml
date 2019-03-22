@@ -1,8 +1,8 @@
 server:
-  port: 8090
+  port: 8091
 spring:
   application:
-    name: serviceprovider
+    name: SERVICEPROVIDER
   datasource:
     url: jdbc:mysql://10.222.48.19:3306/todolist?characterEncoding=utf8&useSSL=false
     username: carlos
@@ -21,5 +21,4 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:9966/eureka/
-
 

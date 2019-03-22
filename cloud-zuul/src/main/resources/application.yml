@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cloud-zuul
+    name: CLOUD-ZUUL
 server:
   port: 8071
 eureka:
@@ -9,6 +9,8 @@ eureka:
       defaultZone: http://localhost:9966/eureka/
 zuul:
   routes:
-    cloud-provider: /api/**
+    SERVICEPROVIDER: /api/**
+
+
 
 
