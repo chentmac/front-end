@@ -16,7 +16,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/")
+    @GetMapping
     public List<UserVo> findAll() {
         return userService.getAllUserInfo();
     }

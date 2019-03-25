@@ -1,7 +1,5 @@
 package com.springcloud.task;
 
-import com.oocl.todolist.entity.User;
-import com.oocl.todolist.vo.UserVo;
 import org.springframework.stereotype.Component;
 
 @Component
