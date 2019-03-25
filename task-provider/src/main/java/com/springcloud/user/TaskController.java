@@ -9,28 +9,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/task")
 public class TaskController {
 
     @Autowired
     private TaskService taskService;
 
-    @PostMapping(value = "")
+    @PostMapping
     public boolean save(@RequestBody TaskVo taskVo) {
       return taskService.save(taskVo);
     }
 
-    @PutMapping(value = "")
+    @PutMapping
     public boolean update(@RequestBody TaskVo taskVo) {
       return taskService.update(taskVo);
 
     }
 
-    @GetMapping("")
+    @GetMapping
     public List<TaskVo> findAll() {
         return taskService.findAll();
     }
