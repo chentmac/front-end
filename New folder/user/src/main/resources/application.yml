@@ -2,7 +2,7 @@ server:
   port: 8091
 spring:
   application:
-    name: SERVICEPROVIDER
+    name: USERPROVIDER
   datasource:
     url: jdbc:mysql://10.222.48.19:3306/todolist?characterEncoding=utf8&useSSL=false
     username: carlos
