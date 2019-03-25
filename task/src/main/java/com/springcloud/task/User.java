@@ -22,10 +22,6 @@ public class User implements Serializable {
     @Column(name = "DEPARTMENT")
     private String department;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "initiator", cascade = CascadeType.MERGE)
-    private List<Task> initialedTasks;
-
     public long getId() {
         return id;
     }
@@ -58,11 +54,4 @@ public class User implements Serializable {
         this.department = department;
     }
 
-    public List<Task> getInitialedTasks() {
-        return initialedTasks;
-    }
-
-    public void setInitialedTasks(List<Task> initialedTasks) {
-        this.initialedTasks = initialedTasks;
-    }
 }

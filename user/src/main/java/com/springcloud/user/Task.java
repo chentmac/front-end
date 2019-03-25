@@ -27,14 +27,6 @@ public class Task implements Serializable {
   @Column(name = "ID")
   private long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "INITIATOR", referencedColumnName = "userName")
-  private User initiator;
-
-  @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
-  @JoinTable(name = "USER_TASK_REL", joinColumns = {@JoinColumn(name = "TASK_ID", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "userName")})
-  private List<User> executors;
-
   @JsonIgnore
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "task", cascade = CascadeType.ALL)
   private List<TaskAssign> taskAssigns;
@@ -70,13 +62,6 @@ public class Task implements Serializable {
     this.id = id;
   }
 
-  public User getInitiator() {
-    return initiator;
-  }
-
-  public void setInitiator(User initiator) {
-    this.initiator = initiator;
-  }
 
   public Date getCreateDate() {
     return createDate;
@@ -118,11 +103,5 @@ public class Task implements Serializable {
     this.status = status;
   }
 
-  public List<User> getExecutors() {
-    return executors;
-  }
 
-  public void setExecutors(List<User> executors) {
-    this.executors = executors;
-  }
 }

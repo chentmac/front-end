@@ -1,10 +1,6 @@
 package com.springcloud.user;
 
-import com.oocl.todolist.entity.User;
-import com.oocl.todolist.service.TaskService;
-import com.oocl.todolist.translator.TaskTranslator;
-import com.oocl.todolist.vo.TaskVo;
-import java.util.ArrayList;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,15 +97,15 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void insertAssign(Task t) {
-    List<User> users = t.getExecutors();
-    List<TaskAssign> assigns = new ArrayList<>();
-    for (User u : users) {
-      TaskAssign a = new TaskAssign();
-      a.setTask(t);
-      a.setUsername(u.getUserName());
-      a.setCompleted(false);
-      assigns.add(a);
-    }
-    t.setTaskAssigns(assigns);
+//    List<User> users = t.getExecutors();
+//    List<TaskAssign> assigns = new ArrayList<>();
+//    for (User u : users) {
+//      TaskAssign a = new TaskAssign();
+//      a.setTask(t);
+//      a.setUsername(u.getUserName());
+//      a.setCompleted(false);
+//      assigns.add(a);
+//    }
+//    t.setTaskAssigns(assigns);
   }
 }
