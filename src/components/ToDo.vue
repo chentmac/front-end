@@ -203,7 +203,6 @@
         this.toDayTaskCount = 0;
         let itemInfo;
         await axios.get(Constant.BASE_URL + '/task/todo/'+userName).then(response => {
-          console.log(response.data)
           itemInfo = response.data;
           itemInfo.forEach(value => {
             if(Utils.checkToday(value.expireDate)){

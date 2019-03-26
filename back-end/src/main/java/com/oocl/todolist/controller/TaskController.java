@@ -13,18 +13,18 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @PostMapping(value = "")
+    @PostMapping
     public boolean save(@RequestBody TaskVo taskVo) {
       return taskService.save(taskVo);
     }
 
-    @PutMapping(value = "")
+    @PutMapping
     public boolean update(@RequestBody TaskVo taskVo) {
       return taskService.update(taskVo);
 
     }
 
-    @GetMapping("")
+    @GetMapping
     public List<TaskVo> findAll() {
         return taskService.findAll();
     }

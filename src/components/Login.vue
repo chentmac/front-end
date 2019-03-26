@@ -65,7 +65,6 @@
         this.registerLoading = true
         axios.post(Constant.BASE_URL+'/user',this.user).then(response=>{
           if (response.data != null) {
-            console.log(response.data)
             this.username = response.data;
             this.$router.push('/toDoForm');
           }
