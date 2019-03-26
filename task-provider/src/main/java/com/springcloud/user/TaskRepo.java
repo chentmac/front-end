@@ -15,8 +15,8 @@ public interface TaskRepo extends JpaRepository<Task, Long> {
   @Query(value = "select * from task t,task_assign a where t.id = a.task_id and a.username = ?1",nativeQuery = true)
   List<Task> findByExecutor(String executor);
 
-  @Query(value = "select * from task t,task_assign a where t.id = a.task_id and a.is_completed = 0 and a.username = ?1",nativeQuery = true)
-  List<Task> findAllToDo(String username);
+  @Query(value = "select * from task t,task_assign a where t.id = a.task_id and a.is_completed = 0 ",nativeQuery = true)
+  List<Task> findAllToDo();
 
   @Query(value = "select * from task t,task_assign a where t.id = a.task_id and a.is_completed = 1",nativeQuery = true)
   List<Task> findAllFinished();

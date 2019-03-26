@@ -33,9 +33,9 @@ public class TaskController {
         return taskService.findAll();
     }
 
-    @GetMapping("/todo/{username}")
-    public List<TaskVo> findAllToDo(@PathVariable("username") String username){
-        return taskService.findAllToDo(username);
+    @GetMapping("/todo")
+    public List<TaskVo> findAllToDo(){
+        return taskService.findAllToDo();
     }
 
   @GetMapping("/finished")

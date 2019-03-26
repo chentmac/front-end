@@ -42,6 +42,17 @@ public class Task implements Serializable {
   @Column(name = "STATUS", length = 4)
   private int status = 0;
 
+  @Column(name = "INITIATOR", length = 50)
+  private String initiator;
+
+  public String getInitiator() {
+    return initiator;
+  }
+
+  public void setInitiator(String initiator) {
+    this.initiator = initiator;
+  }
+
   public List<TaskAssign> getTaskAssigns() {
     return taskAssigns;
   }

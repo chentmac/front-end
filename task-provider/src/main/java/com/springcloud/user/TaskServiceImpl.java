@@ -1,6 +1,7 @@
 package com.springcloud.user;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class TaskServiceImpl implements TaskService {
   public boolean save(TaskVo taskVo) {
     try {
       Task task = translator.translateToEntity(taskVo);
-      insertAssign(task);
+      insertAssign(taskVo,task);
       taskRepo.save(task);
     } catch (Exception e) {
       return false;
@@ -43,7 +44,7 @@ public class TaskServiceImpl implements TaskService {
     try {
       Task task = translator.translateToEntity(taskVo);
       deleteAssign(task.getId());
-      insertAssign(task);
+      insertAssign(taskVo,task);
       taskRepo.save(task);
     } catch (Exception e) {
       return false;
@@ -71,8 +72,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public List<TaskVo> findAllToDo(String username) {
-    List<Task> tasks = taskRepo.findAllToDo(username);
+  public List<TaskVo> findAllToDo() {
+    List<Task> tasks = taskRepo.findAll();
     List<TaskVo> vos = translator.translateToVo(tasks);
     return vos;
   }
@@ -96,16 +97,16 @@ public class TaskServiceImpl implements TaskService {
     taskAssignRepo.deleteByTaskId(taskId);
   }
 
-  private void insertAssign(Task t) {
-//    List<User> users = t.getExecutors();
-//    List<TaskAssign> assigns = new ArrayList<>();
-//    for (User u : users) {
-//      TaskAssign a = new TaskAssign();
-//      a.setTask(t);
-//      a.setUsername(u.getUserName());
-//      a.setCompleted(false);
-//      assigns.add(a);
-//    }
-//    t.setTaskAssigns(assigns);
+  private void insertAssign(TaskVo vo,Task t) {
+    List<Long> executorsId = vo.getExecutorsId();
+    List<TaskAssign> assigns = new ArrayList<>();
+    for (Long executorId : executorsId) {
+      TaskAssign a = new TaskAssign();
+      a.setTask(t);
+      a.setUserId(executorId);
+      a.setCompleted(false);
+      assigns.add(a);
+    }
+    t.setTaskAssigns(assigns);
   }
 }

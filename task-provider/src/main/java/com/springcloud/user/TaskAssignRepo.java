@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 
 public interface TaskAssignRepo extends JpaRepository<TaskAssign, Long> {
-  TaskAssign findByUsernameAndTaskId(String username, Long taskId);
 
   List<TaskAssign> findByTaskId(long taskId);
 
@@ -15,6 +14,6 @@ public interface TaskAssignRepo extends JpaRepository<TaskAssign, Long> {
   void deleteByTaskId(long taskId);
 
   @Modifying
-  @Query(value = "update task_assign set is_completed = 1 where username = ?1 and task_id = ?2",nativeQuery = true)
+  @Query(value = "update task_assign set is_completed = 1 where user_id = ?1 and task_id = ?2",nativeQuery = true)
   void finishTask(String username, long taskId);
 }

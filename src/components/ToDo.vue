@@ -56,11 +56,6 @@
               <span v-else-if="scope.row.expireDate !== null">{{scope.row.expireDate.substring(0, 10)}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="Action" :show-overflow-tooltip="true">
-            <template slot-scope="scope" v-if="scope.row.executorsName.indexOf(user.userName)>-1">
-              <span><el-button type="danger" @click="finishClick(scope.row.taskId)">Finish</el-button></span>
-            </template>
-          </el-table-column>
         </el-table>
         <el-pagination class="table-nav" @size-change="handleSizeChange" @current-change="handleCurrentChange"
                        :current-page="currentPage" :page-sizes="[10,20,30, 40, 50]" :page-size=pageSize
@@ -198,11 +193,12 @@
         this.dialogVisible = true;
         this.isAdd = true;
       },
-      async findAllitem(userName) {
+      async findAllitem() {
         this.toDayList = [];
         this.toDayTaskCount = 0;
         let itemInfo;
-        await axios.get(Constant.BASE_URL + '/task/todo/'+userName).then(response => {
+        await axios.get(Constant.BASE_URL + '/task/todo').then(response => {
+          console.log(response.data)
           itemInfo = response.data;
           itemInfo.forEach(value => {
             if(Utils.checkToday(value.expireDate)){
