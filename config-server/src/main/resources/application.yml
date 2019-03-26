@@ -1,0 +1,12 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name:  SpringCloud-Config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/zhanghaipin/SpringCloud-Config.git #git仓库配置文件
+          #访问：http://localhost:9002/application-dev.yml
