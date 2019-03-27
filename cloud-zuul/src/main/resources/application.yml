@@ -9,8 +9,8 @@ eureka:
       defaultZone: http://localhost:9966/eureka/
 zuul:
   routes:
-    USERPROVIDER: /task/**
-    TASKPROVIDER: /user/**
+    TASKPROVIDER: /task/**
+    USERPROVIDER: /user/**
 
 
 
