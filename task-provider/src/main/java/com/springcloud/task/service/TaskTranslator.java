@@ -1,6 +1,7 @@
 package com.springcloud.task.service;
 
 
+import com.springcloud.task.controller.UserRemote;
 import com.springcloud.task.dto.TaskVo;
 import com.springcloud.task.dao.TaskAssignRepo;
 import com.springcloud.task.entity.Task;
@@ -20,6 +21,8 @@ import java.util.Map;
 @Component
 public class TaskTranslator {
 
+  @Autowired
+  UserRemote userRemote;
 
   @Autowired
   private TaskAssignRepo taskAssignRepo;
@@ -44,12 +47,13 @@ public class TaskTranslator {
       List<String> usernames = new ArrayList<>();
 
       Map<String, Boolean> executorCompleteMap = new HashMap<>();
-      ServiceInstance serviceInstance = discoveryClient.getInstances("USERPROVIDER").get(0);
-      String url = "http://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + "/";
-      System.out.println(url);
+//      ServiceInstance serviceInstance = discoveryClient.getInstances("USERPROVIDER").get(0);
+//      String url = "http://" + serviceInstance.getHost() + ":" + serviceInstance.getPort() + "/";
+//      System.out.println(url);
       for (TaskAssign ta : taskAssignRepo.findByTaskId(taskId)) {
         System.out.println(ta.getUserId());
-        User user = restTemplate.getForObject(url+ta.getUserId(), User.class);
+//        User user = restTemplate.getForObject(url+ta.getUserId(), User.class);
+        User user = userRemote.findUserById(ta.getUserId());
         usernames.add(user.getUserName());
         executorCompleteMap.put(user.getUserName(), ta.isCompleted());
       }
