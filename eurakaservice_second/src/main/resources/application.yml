@@ -1,0 +1,13 @@
+server:
+  port: 9967
+
+spring:
+  application:
+    name: EUREKA
+
+eureka:
+  instance:
+    hostname: localhost   # eureka ????
+  client:
+    service-url:
+      defaultZone: http://localhost:9966/eureka/  # ????????
