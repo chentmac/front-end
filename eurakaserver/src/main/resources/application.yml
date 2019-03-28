@@ -7,7 +7,9 @@ spring:
 
 eureka:
   instance:
-    hostname: localhost   # eureka 实例名称
+    hostname: localhost
   client:
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
-      defaultZone: http://localhost:9967/eureka/  # 注册中心访问地址
+      defaultZone: http://${security.user.name}:${security.user.password}@localhost:9967/eureka/  # ????????
