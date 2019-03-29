@@ -11,6 +11,15 @@ zuul:
   routes:
     TASKPROVIDER: /task/**
     USERPROVIDER: /user/**
-
-
-
+hystrix:
+  command:
+    commandKey:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 0

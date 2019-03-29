@@ -34,7 +34,7 @@ public class UserController {
 
   }
 
-  @HystrixCommand(fallbackMethod = "loginFallback")
+//  @HystrixCommand(fallbackMethod = "loginFallback")
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   public User login(@RequestBody LoginVo loginVo) {
 
