@@ -5,13 +5,6 @@ spring:
   application:
     name: EUREKA
 
-security:
-  basic:
-    enabled: true
-  user:
-    name: admin
-    password: 123456
-
 eureka:
   instance:
     hostname: localhost
@@ -19,4 +12,4 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: http://${security.user.name}:${security.user.password}@localhost:9966/eureka/  # ????????
+      defaultZone: http://root:123456@localhost:9966/eureka/
